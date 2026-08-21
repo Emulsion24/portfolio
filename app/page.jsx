@@ -1,25 +1,36 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
-import { useState, useEffect } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useScroll,
+  useTransform,
+  useVelocity,
+  animate,
+  AnimatePresence,
+} from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 
 import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   Code2,
-  ExternalLink,
   Layers3,
-  Mail,
-  Sparkles,
   Zap,
+  ShoppingCart,
+  Database,
+  Activity,
+  Cpu,
+  Menu,
+  X,
+  Github,
+  Linkedin,
+  Mail,
 } from "lucide-react";
-
-import {
-  FaGithub,
-  FaInstagram,
-  FaLinkedin,
-} from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa6";
 
 /* =========================================================
    PROJECT DATA
@@ -33,18 +44,12 @@ const projects = [
     eyebrow: "Gaushala Digital Ecosystem",
     description:
       "A complete digital platform built around gaushala operations, donations, payments, digital products and administration.",
-    tags: [
-      "Admin Panel",
-      "Payments",
-      "Donations",
-      "E-books",
-      "Management",
-    ],
+    tags: ["Admin Panel", "Payments", "Donations", "E-books"],
     url: "https://www.dhenumahima.com/",
     featured: true,
-    theme: "lime",
+    theme: "terracotta",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
   },
-
   {
     id: "02",
     type: "CLIENT PRODUCT",
@@ -52,36 +57,25 @@ const projects = [
     eyebrow: "Management & Registration Platform",
     description:
       "A management-focused platform with registration workflows, geographic hierarchy, resources and administrative systems.",
-    tags: [
-      "Registration",
-      "Admin",
-      "State / District",
-      "Resources",
-      "Workflows",
-    ],
+    tags: ["Registration", "Admin", "State / District", "Workflows"],
     url: "https://www.gausamman.cloud/",
     featured: true,
-    theme: "violet",
+    theme: "amber",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
   },
-
   {
     id: "03",
     type: "PROFESSIONAL WORK",
     title: "Rezillion",
     eyebrow: "Solar Technology Platform",
     description:
-      "A professional web product involving solar calculation, installer bidding, project tracking, documents, scoring and project workflows.",
-    tags: [
-      "Solar Calculator",
-      "Bidding",
-      "Project Management",
-      "Documents",
-    ],
+      "A professional web product involving solar calculation, installer bidding, project tracking, documents, scoring and workflows.",
+    tags: ["Solar Calculator", "Bidding", "Project Management"],
     url: "https://rezillion.energy/",
     featured: true,
-    theme: "blue",
+    theme: "sand",
+    image: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?q=80&w=800&auto=format&fit=crop",
   },
-
   {
     id: "04",
     type: "PROFESSIONAL WORK",
@@ -89,231 +83,155 @@ const projects = [
     eyebrow: "Clean Energy Job Platform",
     description:
       "A recruitment-focused web application built around candidates, employers, job discovery, CV creation and career workflows.",
-    tags: [
-      "Job Portal",
-      "Candidates",
-      "Employers",
-      "CV",
-    ],
+    tags: ["Job Portal", "Candidates", "Employers", "CV"],
     url: "https://www.greenzeejobs.com/",
     featured: true,
-    theme: "orange",
-  },
-
-  {
-    id: "05",
-    type: "PERSONAL PRODUCT",
-    title: "BlinkCharts",
-    eyebrow: "Financial Research Platform",
-    description:
-      "A data-heavy product combining charts, analysis, scoring, watchlists and research-oriented workflows.",
-    tags: [
-      "Charts",
-      "Analytics",
-      "Research",
-      "Dashboard",
-    ],
-    url: "https://blinkcharts.com/",
-    featured: true,
-    theme: "cyan",
-  },
-
-  {
-    id: "06",
-    type: "PERSONAL / CLIENT",
-    title: "Vizion",
-    eyebrow: "Real Estate Experience",
-    description:
-      "A cinematic real-estate showcase built around visual presentation, motion and premium digital experience.",
-    tags: [
-      "Real Estate",
-      "Landing Page",
-      "Motion",
-      "UI",
-    ],
-    url: "https://vizion-build-showcase.vercel.app/",
-    featured: true,
-    theme: "pink",
-  },
-
-  {
-    id: "07",
-    type: "PERSONAL PRODUCT",
-    title: "Image Compressor",
-    eyebrow: "Utility Product",
-    description:
-      "A simple browser-based utility focused on compressing images quickly while keeping the user experience clean.",
-    tags: [
-      "Image Processing",
-      "Utility",
-      "Performance",
-    ],
-    featured: false,
-    theme: "green",
-  },
-
-  {
-    id: "08",
-    type: "PERSONAL PRODUCT",
-    title: "PDF Compressor",
-    eyebrow: "Utility Product",
-    description:
-      "A lightweight tool focused on making PDF compression simple and accessible.",
-    tags: [
-      "PDF",
-      "File Processing",
-      "Utility",
-    ],
-    featured: false,
-    theme: "red",
+    theme: "peach",
+    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=800&auto=format&fit=crop",
   },
 ];
 
 /* =========================================================
-   SERVICES
+   SHELF PRODUCTS DATA
+========================================================= */
+
+const products = [
+  { id: "PKG-A1", name: "Forge Auth", cat: "Security", price: 129, desc: "Drop-in authentication primitive. OAuth, Magic Links, and biometric passkeys.", stack: "Node, Redis", icon: "text-[#D25E3E]" },
+  { id: "PKG-B2", name: "Syntax Engine", cat: "UI Core", price: 89, desc: "Strictly typed, headless React component library for complex dashboards.", stack: "React, Tailwind", icon: "text-[#B45309]" },
+  { id: "PKG-C3", name: "Signal AI", cat: "AI / ML", price: 199, desc: "Streaming LLM wrapper with built-in rate limiting, caching, and prompt defense.", stack: "Next.js, OpenAI", icon: "text-[#D97706]" },
+  { id: "PKG-D4", name: "Vault ORM", cat: "Database", price: 149, desc: "Type-safe query builder optimized for edge computing and serverless environments.", stack: "TypeScript, SQL", icon: "text-[#9A3412]" },
+  { id: "PKG-E5", name: "Metric.sh", cat: "Telemetry", price: 99, desc: "Lightweight analytics script that bypasses ad-blockers for vital system telemetry.", stack: "Go, ClickHouse", icon: "text-[#D25E3E]" },
+  { id: "PKG-F6", name: "Nexus Admin", cat: "UI Core", price: 159, desc: "Full-featured admin panel starter. Data grids, charts, and RBAC included.", stack: "Next.js, Tailwind", icon: "text-[#B45309]" },
+];
+
+/* =========================================================
+   SERVICES & STACK
 ========================================================= */
 
 const services = [
-  {
-    number: "01",
-    icon: Layers3,
-    title: "Business Websites",
-    description:
-      "Modern websites designed to establish trust, communicate value and generate enquiries.",
-  },
-
-  {
-    number: "02",
-    icon: Code2,
-    title: "Web Applications",
-    description:
-      "Custom dashboards, management systems, portals, authentication, APIs and database-driven applications.",
-  },
-
-  {
-    number: "03",
-    icon: Zap,
-    title: "Digital Products",
-    description:
-      "MVPs and product ideas taken from rough concept to something real people can actually use.",
-  },
+  { number: "01", icon: Layers3, title: "Business Websites", description: "Modern websites designed to establish trust, communicate value and generate enquiries." },
+  { number: "02", icon: Code2, title: "Web Applications", description: "Custom dashboards, management systems, portals, authentication, APIs and database-driven applications." },
+  { number: "03", icon: Zap, title: "Digital Products", description: "MVPs and product ideas taken from rough concept to something real people can actually use." },
 ];
-
-/* =========================================================
-   STACK
-========================================================= */
 
 const stackGroups = [
-  {
-    number: "01",
-    title: "Frontend",
-    technologies: [
-      "JavaScript",
-      "React",
-      "Next.js",
-      "Tailwind CSS",
-      "Framer Motion",
-    ],
-  },
-
-  {
-    number: "02",
-    title: "Backend",
-    technologies: [
-      "Node.js",
-      "Express",
-      "REST APIs",
-      "JWT Authentication",
-    ],
-  },
-
-  {
-    number: "03",
-    title: "Data & Backend Services",
-    technologies: [
-      "PostgreSQL",
-      "MySQL",
-      "MongoDB",
-      "Prisma",
-      "Supabase",
-    ],
-  },
-
-  {
-    number: "04",
-    title: "Infrastructure",
-    technologies: [
-      "Git",
-      "GitHub",
-      "Docker",
-      "Vercel",
-      "AWS",
-    ],
-  },
-
-  {
-    number: "05",
-    title: "Product & Integrations",
-    technologies: [
-      "Payment Integration",
-      "Authentication",
-      "File Processing",
-      "Dashboards",
-      "AI",
-    ],
-  },
+  { number: "01", title: "Frontend", technologies: ["JavaScript", "React", "Next.js", "Tailwind CSS", "Framer Motion"] },
+  { number: "02", title: "Backend", technologies: ["Node.js", "Express", "REST APIs", "JWT Authentication"] },
+  { number: "03", title: "Data & Backend Services", technologies: ["PostgreSQL", "MySQL", "MongoDB", "Prisma", "Supabase"] },
+  { number: "04", title: "Infrastructure", technologies: ["Git", "GitHub", "Docker", "Vercel", "AWS"] },
 ];
-
-/* =========================================================
-   PAGES CONFIGURATION (FOR FLOATING BAR)
-========================================================= */
 
 const sitePages = [
   { id: "top", label: "Home" },
   { id: "work", label: "Work" },
+  { id: "shelf", label: "The Shelf" },
   { id: "capabilities", label: "Capabilities" },
   { id: "stack", label: "Stack" },
   { id: "about", label: "About" },
-  { id: "contact", label: "Contact" },
 ];
+
+/* =========================================================
+   ANIMATION VARIANTS
+========================================================= */
+
+const easeOut = [0.16, 1, 0.3, 1];
+
+const fadeUpVariant = {
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.7, ease: easeOut },
+  },
+};
+
+const slideFromVariant = (dir = 1) => ({
+  hidden: { opacity: 0, x: 48 * dir, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.7, ease: easeOut },
+  },
+});
+
+const scaleInVariant = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: easeOut } },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
+};
+
+/* =========================================================
+   SCROLL PROGRESS BAR
+========================================================= */
+
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+  return (
+    <motion.div
+      style={{ scaleX }}
+      className="fixed left-0 top-0 z-[60] h-[2.5px] w-full origin-left bg-gradient-to-r from-[#D25E3E] via-[#E07A5F] to-[#D25E3E]"
+    />
+  );
+}
+
+/* =========================================================
+   ANIMATED COUNTER
+========================================================= */
+
+function AnimatedCounter({ value, className }) {
+  const ref = useRef(null);
+  const [display, setDisplay] = useState(0);
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasRun.current) {
+          hasRun.current = true;
+          const controls = animate(0, value, {
+            duration: 1.4,
+            ease: easeOut,
+            onUpdate: (v) => setDisplay(Math.round(v)),
+          });
+          return () => controls.stop();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return (
+    <span ref={ref} className={className}>
+      {display}
+    </span>
+  );
+}
 
 /* =========================================================
    MAGNETIC BUTTON
 ========================================================= */
 
-function MagneticButton({
-  children,
-  href = "#",
-}) {
+function MagneticButton({ children, href = "#" }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-
-  const springX = useSpring(x, {
-    stiffness: 220,
-    damping: 18,
-  });
-
-  const springY = useSpring(y, {
-    stiffness: 220,
-    damping: 18,
-  });
+  const springX = useSpring(x, { stiffness: 220, damping: 18 });
+  const springY = useSpring(y, { stiffness: 220, damping: 18 });
 
   function handleMouseMove(event) {
-    const rect =
-      event.currentTarget.getBoundingClientRect();
-
-    const relativeX =
-      event.clientX -
-      rect.left -
-      rect.width / 2;
-
-    const relativeY =
-      event.clientY -
-      rect.top -
-      rect.height / 2;
-
-    x.set(relativeX * 0.14);
-    y.set(relativeY * 0.14);
+    const rect = event.currentTarget.getBoundingClientRect();
+    x.set((event.clientX - rect.left - rect.width / 2) * 0.14);
+    y.set((event.clientY - rect.top - rect.height / 2) * 0.14);
   }
 
   function reset() {
@@ -324,19 +242,20 @@ function MagneticButton({
   return (
     <motion.a
       href={href}
-      style={{
-        x: springX,
-        y: springY,
-      }}
+      style={{ x: springX, y: springY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={reset}
-      className="group inline-flex items-center gap-3 rounded-full bg-[#d9ff4f] px-6 py-3.5 text-sm font-semibold text-[#090a0b]"
+      whileTap={{ scale: 0.96 }}
+      className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-[#362926] px-6 py-3.5 text-sm font-semibold text-[#FAF5F0] shadow-md transition-colors duration-300 hover:bg-[#D25E3E] sm:gap-3 sm:px-7"
     >
-      {children}
-
+      <span className="relative z-10">{children}</span>
       <ArrowUpRight
         size={15}
-        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+        className="relative z-10 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+      />
+      <motion.span
+        aria-hidden
+        className="absolute inset-0 -z-0 bg-gradient-to-r from-[#D25E3E] to-[#E07A5F] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
       />
     </motion.a>
   );
@@ -349,11 +268,9 @@ function MagneticButton({
 function TechBadge({ name }) {
   return (
     <motion.span
-      whileHover={{
-        y: -3,
-        scale: 1.02,
-      }}
-      className="rounded-full border border-white/10 bg-white/[0.025] px-4 py-2 text-[10px] text-white/45 transition-colors hover:border-[#d9ff4f]/30 hover:bg-[#d9ff4f]/[0.04] hover:text-[#d9ff4f]"
+      whileHover={{ y: -3, scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+      className="rounded-full border border-[#E8D9D3] bg-white px-3.5 py-2 text-[10px] font-semibold text-[#6B5C58] transition-colors hover:border-[#D25E3E]/30 hover:bg-[#FDF8F5] hover:text-[#D25E3E] sm:px-4"
     >
       {name}
     </motion.span>
@@ -366,107 +283,45 @@ function TechBadge({ name }) {
 
 function ProjectPreview({ project }) {
   const glowMap = {
-    lime:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(217,255,79,.18),transparent_34%)]",
-
-    violet:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(124,108,255,.2),transparent_34%)]",
-
-    blue:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(68,145,255,.18),transparent_34%)]",
-
-    orange:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(255,145,70,.17),transparent_34%)]",
-
-    cyan:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(63,215,220,.18),transparent_34%)]",
-
-    pink:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(255,100,177,.16),transparent_34%)]",
-
-    green:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(100,220,130,.15),transparent_34%)]",
-
-    red:
-      "bg-[radial-gradient(circle_at_72%_25%,rgba(255,80,80,.14),transparent_34%)]",
+    amber: "bg-[radial-gradient(circle_at_72%_25%,rgba(217,119,6,.15),transparent_34%)]",
+    terracotta: "bg-[radial-gradient(circle_at_72%_25%,rgba(210,94,62,.15),transparent_34%)]",
+    sand: "bg-[radial-gradient(circle_at_72%_25%,rgba(180,83,9,.15),transparent_34%)]",
+    peach: "bg-[radial-gradient(circle_at_72%_25%,rgba(234,88,12,.15),transparent_34%)]",
   };
 
   return (
-    <div
-      className={`relative aspect-[1.2/.82] overflow-hidden rounded-[28px] bg-[#0d0f10] ${glowMap[project.theme]}`}
-    >
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.028)_1px,transparent_1px)] bg-[size:44px_44px]" />
+    <div className={`relative aspect-[1.25/.9] overflow-hidden rounded-[22px] bg-[#F5EBE6] sm:aspect-[1.2/.82] sm:rounded-[28px] ${glowMap[project.theme]}`}>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,.025)_1px,transparent_1px)] bg-[size:32px_32px]" />
 
       <motion.div
-        whileHover={{
-          scale: 1.025,
-          rotateX: 1,
-          rotateY: -1,
-        }}
-        transition={{
-          duration: 0.55,
-        }}
-        className="absolute left-[9%] right-[9%] top-[10%] bottom-[8%] overflow-hidden rounded-[17px] border border-white/10 bg-[#0b0d0e] shadow-[0_35px_100px_rgba(0,0,0,.5)] [transform-style:preserve-3d]"
+        initial={{ clipPath: "inset(0 100% 0 0)" }}
+        whileInView={{ clipPath: "inset(0 0% 0 0)" }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.9, ease: easeOut, delay: 0.15 }}
+        whileHover={{ scale: 1.03, rotateX: 2, rotateY: -2 }}
+        className="absolute left-[5%] right-[5%] top-[7%] bottom-[5%] overflow-hidden rounded-[12px] border border-[#E8D9D3] bg-white shadow-[0_20px_40px_rgba(54,41,38,.12)] [transform-style:preserve-3d] sm:left-[6%] sm:right-[6%] sm:top-[8%] sm:bottom-[6%] sm:rounded-[14px]"
       >
-        <div className="flex h-9 items-center border-b border-white/10 px-3">
+        <div className="absolute top-0 z-10 flex h-7 w-full items-center border-b border-[#E8D9D3] bg-[#FAF5F0] px-3 sm:h-8">
           <div className="flex gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-red-400/60" />
-            <span className="h-2 w-2 rounded-full bg-yellow-300/60" />
-            <span className="h-2 w-2 rounded-full bg-green-400/60" />
-          </div>
-          <div className="mx-auto rounded-full border border-white/10 px-6 py-1 text-[7px] text-white/20">
-            live-product-preview
+            <span className="h-2 w-2 rounded-full bg-[#E07A5F] sm:h-2.5 sm:w-2.5" />
+            <span className="h-2 w-2 rounded-full bg-[#F2CC8F] sm:h-2.5 sm:w-2.5" />
+            <span className="h-2 w-2 rounded-full bg-[#81B29A] sm:h-2.5 sm:w-2.5" />
           </div>
         </div>
 
-        <div className="grid h-full grid-cols-[.2fr_1fr]">
-          <div className="border-r border-white/10 p-3">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div
-                key={item}
-                className={`mb-3 h-3 rounded ${
-                  item === 1
-                    ? "bg-[#d9ff4f]"
-                    : "bg-white/[.055]"
-                }`}
-              />
-            ))}
-          </div>
-
-          <div className="p-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="h-3 w-28 rounded bg-white/15" />
-                <div className="mt-2 h-2 w-20 rounded bg-white/8" />
-              </div>
-              <div className="h-7 w-20 rounded-full bg-white/[.035]" />
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-2">
-              <div className="h-14 rounded-xl border border-white/5 bg-white/[.025]" />
-              <div className="h-14 rounded-xl border border-white/5 bg-white/[.025]" />
-              <div className="h-14 rounded-xl border border-white/5 bg-white/[.025]" />
-            </div>
-
-            <div className="mt-3 h-24 rounded-xl border border-white/5 bg-white/[.018]" />
-
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <div className="h-14 rounded-xl border border-white/5 bg-white/[.018]" />
-              <div className="h-14 rounded-xl border border-white/5 bg-white/[.018]" />
-            </div>
-          </div>
+        <div className="relative h-full w-full overflow-hidden bg-[#FAF5F0] pt-7 sm:pt-8">
+          <img
+            src={project.image}
+            alt={project.title}
+            className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-[#362926]/5 transition-colors duration-300 hover:bg-transparent" />
         </div>
       </motion.div>
 
-      <div className="absolute left-5 top-5 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[.2em] text-white/45 backdrop-blur-xl">
+      <div className="absolute left-4 top-4 rounded-full border border-[#E8D9D3] bg-white/90 px-2.5 py-1 text-[7px] font-bold uppercase tracking-[.2em] text-[#6B5C58] shadow-sm backdrop-blur-md sm:left-5 sm:top-5 sm:px-3 sm:py-1.5 sm:text-[8px]">
         {project.id}
-      </div>
-
-      <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
-        <span className="text-[9px] uppercase tracking-[.2em] text-white/25">
-          {project.type}
-        </span>
-        <ExternalLink size={14} className="text-white/25" />
       </div>
     </div>
   );
@@ -479,45 +334,30 @@ function ProjectPreview({ project }) {
 function ProjectCard({ project, index }) {
   return (
     <motion.article
-      initial={{
-        opacity: 0,
-        y: 45,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{
-        once: true,
-        margin: "-80px",
-      }}
-      transition={{
-        duration: 0.7,
-        delay: index * 0.06,
-      }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      variants={slideFromVariant(index % 2 === 0 ? -1 : 1)}
+      transition={{ delay: (index % 2) * 0.08 }}
       className="group"
     >
-      <div className="overflow-hidden rounded-[31px] border border-white/10 bg-[#111315]">
+      <div className="overflow-hidden rounded-[24px] border border-[#E8D9D3] bg-white shadow-sm transition-all duration-500 hover:shadow-[0_15px_30px_rgba(54,41,38,.06)] sm:rounded-[31px]">
         <ProjectPreview project={project} />
 
-        <div className="p-6 md:p-8">
-          <p className="text-[8px] font-bold uppercase tracking-[.22em] text-[#d9ff4f]">
-            {project.eyebrow}
-          </p>
+        <div className="p-5 sm:p-6 md:p-8">
+          <p className="text-[8px] font-bold uppercase tracking-[.22em] text-[#D25E3E]">{project.eyebrow}</p>
 
-          <h3 className="mt-4 text-3xl font-medium tracking-[-.045em] md:text-[2.7rem]">
+          <h3 className="mt-3 text-2xl font-bold tracking-[-.04em] text-[#362926] sm:mt-4 sm:text-3xl md:text-[2.6rem]">
             {project.title}
           </h3>
 
-          <p className="mt-4 max-w-xl text-sm leading-6 text-white/35">
-            {project.description}
-          </p>
+          <p className="mt-3 max-w-xl text-sm leading-6 text-[#6B5C58] sm:mt-4">{project.description}</p>
 
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap gap-2 sm:mt-6">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-white/10 px-3 py-1.5 text-[8px] uppercase tracking-[.12em] text-white/35"
+                className="rounded-full border border-[#E8D9D3] bg-[#FAF5F0] px-3 py-1.5 text-[8px] font-semibold uppercase tracking-[.12em] text-[#8C7A77]"
               >
                 {tag}
               </span>
@@ -528,10 +368,10 @@ function ProjectCard({ project, index }) {
             href={project.url}
             target="_blank"
             rel="noreferrer"
-            className="mt-8 inline-flex items-center gap-2 text-xs font-semibold text-white/65 transition hover:text-[#d9ff4f]"
+            className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-[#8C7A77] transition-colors hover:text-[#D25E3E] sm:mt-8"
           >
             Open live project
-            <ArrowUpRight size={14} />
+            <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
           </a>
         </div>
       </div>
@@ -540,17 +380,47 @@ function ProjectCard({ project, index }) {
 }
 
 /* =========================================================
-   PAGE
+   MAIN PAGE COMPONENT
 ========================================================= */
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const heroRef = useRef(null);
+  const [spotlight, setSpotlight] = useState({ x: 50, y: 50 });
 
-  // Optional: Track scroll to dynamically highlight/update current section page index
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroContentY = useTransform(heroProgress, [0, 1], [0, 80]);
+  const heroContentOpacity = useTransform(heroProgress, [0, 0.85], [1, 0]);
+  const orbOneY = useTransform(heroProgress, [0, 1], [0, -60]);
+  const orbTwoY = useTransform(heroProgress, [0, 1], [0, 60]);
+
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const marqueeSkew = useSpring(useTransform(scrollVelocity, [-2000, 0, 2000], [-6, 0, 6]), {
+    stiffness: 300,
+    damping: 40,
+  });
+
+  const footerRef = useRef(null);
+  const { scrollYProgress: footerProgress } = useScroll({
+    target: footerRef,
+    offset: ["start end", "end end"],
+  });
+  const footerIconY = useTransform(footerProgress, [0, 1], [40, -20]);
+  const footerIconRotate = useTransform(footerProgress, [0, 1], [0, 12]);
+
   useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mql.matches);
+    document.documentElement.style.scrollBehavior = "smooth";
+
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
-      
       sitePages.forEach((page, index) => {
         const element = document.getElementById(page.id);
         if (element) {
@@ -562,66 +432,79 @@ export default function Home() {
         }
       });
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   const handlePrev = () => {
     if (currentIndex > 0) {
-      const nextIdx = currentIndex - 1;
-      setCurrentIndex(nextIdx);
-      const target = document.getElementById(sitePages[nextIdx].id);
-      target?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(sitePages[currentIndex - 1].id)?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const handleNext = () => {
     if (currentIndex < sitePages.length - 1) {
-      const nextIdx = currentIndex + 1;
-      setCurrentIndex(nextIdx);
-      const target = document.getElementById(sitePages[nextIdx].id);
-      target?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(sitePages[currentIndex + 1].id)?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const handleHeroMouseMove = (event) => {
+    if (reducedMotion || !heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    setSpotlight({
+      x: ((event.clientX - rect.left) / rect.width) * 100,
+      y: ((event.clientY - rect.top) / rect.height) * 100,
+    });
+  };
+
+  const goTo = (id) => {
+    setMenuOpen(false);
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 150);
+  };
+
   return (
-    <main className="min-h-screen overflow-hidden bg-[#090a0b] text-[#f4f4ef] relative pb-20">
+    <main className="min-h-screen overflow-hidden bg-[#FAF5F0] pb-16 font-sans text-[#362926] selection:bg-[#D25E3E] selection:text-white sm:pb-20">
+      <ScrollProgressBar />
 
       {/* =====================================================
           FLOATING PAGINATION BAR
       ====================================================== */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-full border border-white/10 bg-[#090a0b]/80 px-4 py-2.5 backdrop-blur-xl shadow-2xl"
+        transition={{ duration: 0.8, delay: 0.5, type: "spring" }}
+        className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#E8D9D3] bg-white/90 px-3 py-2 shadow-[0_10px_30px_rgba(54,41,38,.08)] backdrop-blur-xl sm:bottom-6 sm:gap-3 sm:px-4 sm:py-2.5"
       >
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-white/70 transition hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-white/70 cursor-pointer disabled:cursor-not-allowed"
+          aria-label="Previous section"
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold text-[#8C7A77] transition hover:bg-[#F5EBE6] hover:text-[#362926] disabled:opacity-40 sm:px-3"
         >
           <ArrowLeft size={14} />
           <span className="hidden sm:inline">Prev</span>
         </button>
-
-        <div className="h-4 w-[1px] bg-white/10" />
-
-        <div className="text-[11px] font-semibold tracking-wider text-[#d9ff4f] px-1">
+        <div className="h-4 w-[1px] bg-[#E8D9D3]" />
+        <div className="px-0.5 text-[10px] font-bold tracking-wider text-[#D25E3E] sm:text-[11px]">
           <span>0{currentIndex + 1}</span>
-          <span className="text-white/30 font-normal"> / 0{sitePages.length}</span>
-          <span className="hidden md:inline ml-2 text-white/50 text-[10px] uppercase">
+          <span className="font-medium text-[#B09F9B]"> / 0{sitePages.length}</span>
+          <span className="ml-2 hidden text-[10px] font-semibold uppercase text-[#B09F9B] md:inline">
             ({sitePages[currentIndex].label})
           </span>
         </div>
-
-        <div className="h-4 w-[1px] bg-white/10" />
-
+        <div className="h-4 w-[1px] bg-[#E8D9D3]" />
         <button
           onClick={handleNext}
           disabled={currentIndex === sitePages.length - 1}
-          className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-white/70 transition hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-white/70 cursor-pointer disabled:cursor-not-allowed"
+          aria-label="Next section"
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold text-[#8C7A77] transition hover:bg-[#F5EBE6] hover:text-[#362926] disabled:opacity-40 sm:px-3"
         >
           <span className="hidden sm:inline">Next</span>
           <ArrowRight size={14} />
@@ -631,559 +514,574 @@ export default function Home() {
       {/* =====================================================
           NAVBAR
       ====================================================== */}
-
-      <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 md:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-[#090a0b]/70 px-4 py-3 backdrop-blur-xl md:px-5">
-          <a href="#top" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d9ff4f] text-[10px] font-black text-[#090a0b]">
+      <header className="fixed left-0 right-0 top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4 md:px-8">
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, type: "spring" }}
+          className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-[#E8D9D3] bg-white/85 px-3 py-2.5 shadow-sm backdrop-blur-xl sm:px-4 sm:py-3 md:px-5"
+        >
+          <a href="#top" className="group flex items-center gap-2.5 sm:gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D25E3E] text-[9px] font-black text-white shadow-md transition-transform group-hover:rotate-12 group-hover:scale-110 sm:h-9 sm:w-9 sm:text-[10px]">
               SK
             </div>
             <div className="hidden sm:block">
-              <p className="text-[10px] font-bold tracking-[.15em]">
-                SHAVANDEB KAITI
-              </p>
-              <p className="mt-0.5 text-[8px] tracking-[.18em] text-white/25">
-                DIGITAL PRODUCT DEVELOPER
-              </p>
+              <p className="text-[10px] font-bold tracking-[.15em] text-[#362926]">SHAVANDEB KAITI</p>
+              <p className="mt-0.5 text-[8px] font-semibold tracking-[.18em] text-[#8C7A77]">DIGITAL PRODUCT DEVELOPER</p>
             </div>
           </a>
-
-          <nav className="hidden items-center gap-7 text-xs text-white/45 md:flex">
-            <a href="#work" className="transition hover:text-white">Work</a>
-            <a href="#capabilities" className="transition hover:text-white">Capabilities</a>
-            <a href="#stack" className="transition hover:text-white">Stack</a>
-            <a href="#about" className="transition hover:text-white">About</a>
-            <a href="#contact" className="transition hover:text-white">Contact</a>
+          <nav className="hidden items-center gap-7 text-xs font-bold text-[#8C7A77] md:flex">
+            {sitePages.slice(1).map((page) => (
+              <a key={page.id} href={`#${page.id}`} className="group relative transition-colors hover:text-[#D25E3E]">
+                {page.label}
+                <span className="absolute -bottom-1 left-0 h-[1.5px] w-0 bg-[#D25E3E] transition-all duration-300 group-hover:w-full" />
+              </a>
+            ))}
           </nav>
 
-          <a
-            href="#contact"
-            className="rounded-full border border-white/10 px-4 py-2.5 text-xs transition hover:border-[#d9ff4f]/40 hover:bg-[#d9ff4f] hover:text-[#090a0b]"
-          >
-            Let's talk
-          </a>
-        </div>
+          <div className="flex items-center gap-2">
+            <a
+              href="#contact"
+              className="hidden rounded-full border border-[#E8D9D3] px-5 py-2.5 text-xs font-bold text-[#362926] shadow-sm transition-colors hover:bg-[#362926] hover:text-white sm:inline-block"
+            >
+              Let's talk
+            </a>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8D9D3] text-[#362926] transition-colors hover:bg-[#362926] hover:text-white md:hidden"
+            >
+              {menuOpen ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* MOBILE MENU */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="mx-auto mt-2 max-w-7xl rounded-[24px] border border-[#E8D9D3] bg-white/95 p-2 shadow-[0_20px_40px_rgba(54,41,38,.1)] backdrop-blur-xl md:hidden"
+            >
+              <nav className="flex flex-col">
+                {sitePages.slice(1).map((page, i) => (
+                  <motion.button
+                    key={page.id}
+                    onClick={() => goTo(page.id)}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                    className="flex items-center justify-between rounded-2xl px-4 py-3.5 text-left text-sm font-bold text-[#362926] transition-colors hover:bg-[#F5EBE6] hover:text-[#D25E3E]"
+                  >
+                    {page.label}
+                    <ArrowUpRight size={14} className="text-[#B09F9B]" />
+                  </motion.button>
+                ))}
+                <a
+                  href="#contact"
+                  onClick={() => setMenuOpen(false)}
+                  className="mt-1 rounded-2xl bg-[#362926] px-4 py-3.5 text-center text-sm font-bold text-[#FAF5F0] transition-colors hover:bg-[#D25E3E]"
+                >
+                  Let's talk
+                </a>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
-
       {/* =====================================================
-          HERO (Page 1)
+          HERO
       ====================================================== */}
-
       <section
         id="top"
-        className="relative px-5 pb-24 pt-36 md:px-10 md:pb-32 md:pt-48"
+        ref={heroRef}
+        onMouseMove={handleHeroMouseMove}
+        className="relative border-b border-[#E8D9D3] px-4 pb-16 pt-28 sm:px-6 sm:pb-20 sm:pt-32 md:px-10 md:pb-32 md:pt-48"
       >
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute left-[3%] top-[14%] h-[360px] w-[360px] rounded-full bg-[#d9ff4f]/[.05] blur-[130px]" />
-          <div className="absolute right-[4%] top-[25%] h-[430px] w-[430px] rounded-full bg-[#6e5cff]/[.055] blur-[150px]" />
+        {/* Cursor-reactive spotlight */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0 hidden transition-[background] duration-300 md:block"
+          style={{
+            background: `radial-gradient(500px circle at ${spotlight.x}% ${spotlight.y}%, rgba(210,94,62,0.06), transparent 60%)`,
+          }}
+        />
+
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+          <motion.div
+            style={{ y: reducedMotion ? 0 : orbOneY }}
+            animate={reducedMotion ? {} : { scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-[3%] top-[14%] h-[260px] w-[260px] rounded-full bg-[#D25E3E]/10 blur-[100px] sm:h-[400px] sm:w-[400px] sm:blur-[130px]"
+          />
+          <motion.div
+            style={{ y: reducedMotion ? 0 : orbTwoY }}
+            animate={reducedMotion ? {} : { scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute right-[4%] top-[25%] h-[280px] w-[280px] rounded-full bg-[#E07A5F]/10 blur-[110px] sm:h-[450px] sm:w-[450px] sm:blur-[150px]"
+          />
         </div>
 
-        <div className="relative mx-auto max-w-7xl">
-          <div className="grid items-center gap-14 lg:grid-cols-[1fr_.46fr]">
-            <div>
+        {/* CONTINUOUS SVG DATA TRACK */}
+        <div className="absolute inset-0 z-0 hidden h-full w-full pointer-events-none opacity-40 sm:block">
+          <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" className="h-full w-full">
+            <path
+              d="M -100 600 L 200 600 L 200 200 L 800 200 L 800 500 L 1200 500 L 1200 100 L 1600 100"
+              fill="none"
+              stroke="#E8D9D3"
+              strokeWidth="2"
+              strokeDasharray="12 12"
+            />
+            {!reducedMotion && (
+              <>
+                <path
+                  d="M -100 600 L 200 600 L 200 200 L 800 200 L 800 500 L 1200 500 L 1200 100 L 1600 100"
+                  fill="none"
+                  stroke="#D25E3E"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  style={{
+                    strokeDasharray: "4000",
+                    strokeDashoffset: "4000",
+                    filter: "drop-shadow(0 0 8px rgba(210, 94, 62, 0.4))",
+                    animation: "draw-trail 6s cubic-bezier(0.65, 0, 0.35, 1) infinite",
+                  }}
+                />
+                <style>{`@keyframes draw-trail { 0% { stroke-dashoffset: 4000; opacity: 0; } 10% { opacity: 1; } 80% { stroke-dashoffset: 0; opacity: 1; } 90% { stroke-dashoffset: 0; opacity: 0; } 100% { stroke-dashoffset: 0; opacity: 0; } }`}</style>
+                <g>
+                  <animateMotion
+                    dur="6s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0; 1"
+                    keySplines="0.65 0 0.35 1"
+                    path="M -100 600 L 200 600 L 200 200 L 800 200 L 800 500 L 1200 500 L 1200 100 L 1600 100"
+                  />
+                  <circle cx="0" cy="0" r="5" fill="#D25E3E" />
+                  <circle cx="0" cy="0" r="12" fill="#E07A5F" className="animate-ping" opacity="0.3" />
+                </g>
+                <style>{`@keyframes fade-packet { 0% { opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 90% { opacity: 0; } 100% { opacity: 0; } }`}</style>
+              </>
+            )}
+          </svg>
+        </div>
+
+        <motion.div
+          style={{ y: reducedMotion ? 0 : heroContentY, opacity: reducedMotion ? 1 : heroContentOpacity }}
+          className="relative z-10 mx-auto max-w-7xl"
+        >
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_.46fr] lg:gap-14">
+            <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="mb-8 flex items-center gap-2"
+                variants={fadeUpVariant}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-white px-3.5 py-2 shadow-sm sm:mb-8 sm:px-4"
               >
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute h-full w-full animate-ping rounded-full bg-[#d9ff4f] opacity-50" />
-                  <span className="relative h-2 w-2 rounded-full bg-[#d9ff4f]" />
+                  <span className="absolute h-full w-full animate-ping rounded-full bg-[#10B981] opacity-60" />
+                  <span className="relative h-2 w-2 rounded-full bg-[#10B981]" />
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[.24em] text-white/30">
-                  Available for selected projects
+                <span className="text-[9px] font-bold uppercase tracking-[.2em] text-[#6B5C58] sm:text-[10px]">
+                  System online // ready to compile
                 </span>
               </motion.div>
 
               <motion.h1
-                initial={{ opacity: 0, y: 35 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9 }}
-                className="max-w-6xl text-[clamp(4.3rem,9vw,9.7rem)] font-medium leading-[.78] tracking-[-.085em]"
+                variants={fadeUpVariant}
+                className="max-w-6xl text-[clamp(2.9rem,13vw,9.7rem)] font-bold leading-[0.88] tracking-[-.05em] text-[#362926] sm:leading-[0.85] sm:tracking-[-.065em]"
               >
-                I build
+                Code <br />
+                <span
+                  className="text-[#FAF5F0]"
+                  style={{
+                    textShadow:
+                      "-2px -2px 0 #D25E3E, 2px -2px 0 #D25E3E, -2px 2px 0 #D25E3E, 2px 2px 0 #D25E3E, 6px 6px 0px rgba(210,94,62,0.15)",
+                  }}
+                >
+                  designed.
+                </span>
                 <br />
-                <span className="text-[#d9ff4f]">products.</span>
-                <br />
-                <span className="text-white/20">not just</span>
-                <br />
-                websites.
+                <span className="text-[#8C7A77]">Shipped.</span>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="mt-10 max-w-xl text-base leading-7 text-white/40 md:text-lg"
+                variants={fadeUpVariant}
+                className="mt-7 max-w-xl text-base leading-7 text-[#6B5C58] sm:mt-10 sm:text-lg"
               >
-                Full-stack developer turning complicated ideas into useful
-                business software, web applications and digital experiences.
+                Engineering scalable web architecture without the bloat. We build high-performance
+                logic engines and robust user interfaces that clients love.
               </motion.p>
 
-              <div className="mt-9 flex flex-wrap gap-3">
-                <MagneticButton href="#work">
-                  See what I've built
-                </MagneticButton>
-                <a
-                  href="#contact"
-                  className="flex items-center gap-2 rounded-full border border-white/10 px-6 py-3.5 text-sm text-white/70 transition hover:bg-white/[.04]"
-                >
-                  Start a project
-                  <ArrowRight size={15} />
-                </a>
-              </div>
+              <motion.div variants={fadeUpVariant} className="mt-8 flex flex-wrap gap-4 sm:mt-9">
+                <MagneticButton href="#work">Browse Workshop</MagneticButton>
+              </motion.div>
+            </motion.div>
 
-              <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-[9px] uppercase tracking-[.18em] text-white/20">
-                <span>8+ builds</span>
-                <span>2 client platforms</span>
-                <span>2 professional products</span>
-                <span>B.Tech graduate</span>
-              </div>
-            </div>
-
-            {/* HERO VISUAL */}
-            <div className="relative hidden h-[520px] lg:block">
+            {/* Premium 3D Abstract Visual */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="relative hidden h-[520px] lg:block"
+            >
               <motion.div
-                animate={{
-                  y: [0, -12, 0],
-                  rotateX: [0, 2, 0],
-                  rotateY: [0, -4, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                animate={reducedMotion ? {} : { y: [0, -15, 0], rotateX: [2, -2, 2], rotateY: [-4, 4, -4] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute left-1/2 top-1/2 h-[310px] w-[300px] -translate-x-1/2 -translate-y-1/2 [perspective:1200px]"
               >
                 <div className="relative h-full w-full [transform-style:preserve-3d]">
-                  <div className="absolute left-1/2 top-1/2 h-[245px] w-[290px] -translate-x-1/2 -translate-y-1/2 -rotate-[5deg] rounded-[24px] border border-white/10 bg-[#111315] p-3 shadow-[0_45px_110px_rgba(0,0,0,.55)]">
-                    <div className="h-full rounded-[17px] border border-white/5 bg-[#0a0c0d] p-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-red-400/50" />
-                        <span className="h-2 w-2 rounded-full bg-yellow-300/50" />
-                        <span className="h-2 w-2 rounded-full bg-green-400/50" />
+                  <div className="absolute left-1/2 top-1/2 h-[245px] w-[290px] -translate-x-1/2 -translate-y-1/2 -rotate-[5deg] rounded-[24px] border border-[#E8D9D3] bg-white p-3 shadow-[0_35px_80px_rgba(54,41,38,.08)]">
+                    <div className="relative h-full overflow-hidden rounded-[17px] border border-[#E8D9D3] bg-[#FDFBF7] p-3">
+                      <div className="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-[#D25E3E]/5" />
+                      <div className="relative z-10 mb-6 flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-[#E07A5F]" />
+                        <span className="h-2 w-2 rounded-full bg-[#F2CC8F]" />
+                        <span className="h-2 w-2 rounded-full bg-[#81B29A]" />
                       </div>
-                      <div className="mt-6 grid grid-cols-[.38fr_1fr] gap-3">
-                        <div>
-                          {[1, 2, 3, 4, 5].map((item) => (
-                            <div
-                              key={item}
-                              className={`mb-2 h-3 rounded ${
-                                item === 1
-                                  ? "bg-[#d9ff4f]"
-                                  : "bg-white/[.05]"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <div>
-                          <div className="h-3 w-28 rounded bg-white/15" />
-                          <div className="mt-2 h-2 w-20 rounded bg-white/8" />
-                          <div className="mt-6 grid grid-cols-3 gap-2">
-                            <div className="h-12 rounded-lg bg-white/[.03]" />
-                            <div className="h-12 rounded-lg bg-white/[.03]" />
-                            <div className="h-12 rounded-lg bg-white/[.03]" />
-                          </div>
-                          <div className="mt-3 h-20 rounded-lg bg-white/[.025]" />
+                      <div className="relative z-10 space-y-3">
+                        <div className="h-3 w-[80%] rounded bg-[#D25E3E]/20" />
+                        <div className="h-3 w-[60%] rounded bg-[#E8D9D3]" />
+                        <div className="h-3 w-[90%] rounded bg-[#E8D9D3]" />
+                        <div className="mt-8 flex gap-2">
+                          <div className="h-10 w-10 rounded bg-[#F5EBE6]" />
+                          <div className="h-10 flex-1 rounded bg-[#F5EBE6]" />
                         </div>
                       </div>
                     </div>
                   </div>
-
                   <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute left-1/2 top-1/2 h-[370px] w-[370px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[.08]"
+                    animate={reducedMotion ? {} : { rotate: 360 }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute left-1/2 top-1/2 h-[380px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#E8D9D3]/80"
                   />
                   <motion.div
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 27, repeat: Infinity, ease: "linear" }}
-                    className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d9ff4f]/10"
+                    animate={reducedMotion ? {} : { rotate: -360 }}
+                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D25E3E]/20"
                   />
-                  <div className="absolute left-[-10px] top-[40%] h-3 w-3 rounded-full bg-[#d9ff4f] shadow-[0_0_25px_rgba(217,255,79,.7)]" />
-                  <div className="absolute right-[5px] top-[22%] h-2.5 w-2.5 rounded-full bg-[#7d6cff] shadow-[0_0_25px_rgba(125,108,255,.7)]" />
-                  <div className="absolute bottom-[20px] right-[55px] h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_22px_rgba(103,232,249,.7)]" />
                 </div>
               </motion.div>
-
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="absolute left-0 top-[18%] rounded-2xl border border-white/10 bg-[#111315]/85 px-4 py-3 backdrop-blur-xl"
-              >
-                <p className="text-[8px] uppercase tracking-[.2em] text-white/20">Featured</p>
-                <p className="mt-1 text-xs text-white/70">Dhenu Mahima</p>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, 9, 0] }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="absolute bottom-[15%] right-0 rounded-2xl border border-white/10 bg-[#111315]/85 px-4 py-3 backdrop-blur-xl"
-              >
-                <p className="text-[8px] uppercase tracking-[.2em] text-white/20">Currently</p>
-                <p className="mt-1 text-xs text-[#d9ff4f]">Building AI</p>
-              </motion.div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-
       {/* =====================================================
-          MARQUEE & PROOF
+          MARQUEE
       ====================================================== */}
-
-      <section className="overflow-hidden border-y border-white/10 bg-[#0d0f10] py-5">
+      <section className="overflow-hidden border-b border-[#E8D9D3] bg-[#F5EBE6] py-3 shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] sm:py-4">
         <motion.div
+          style={{ skewX: reducedMotion ? 0 : marqueeSkew }}
           animate={{ x: ["0%", "-50%"] }}
-          transition={{ duration: 27, repeat: Infinity, ease: "linear" }}
-          className="flex min-w-max gap-10"
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          className="flex min-w-max gap-8 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#8C7A77] sm:gap-12 sm:text-sm"
         >
-          {Array.from({ length: 8 }).map((_, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-10 text-[9px] font-bold uppercase tracking-[.25em] text-white/20"
-            >
-              <span>Business Software</span>
-              <span className="text-[#d9ff4f]">✦</span>
-              <span>Web Applications</span>
-              <span className="text-[#7d6cff]">✦</span>
-              <span>Digital Products</span>
-              <span className="text-[#d9ff4f]">✦</span>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="flex items-center gap-8 sm:gap-12">
+              <span>No abstractions</span>
+              <span className="text-[#D25E3E]">✦</span>
+              <span>Pure logic</span>
+              <span className="text-[#D25E3E]">✦</span>
+              <span>Zero bloat</span>
+              <span className="text-[#D25E3E]">✦</span>
+              <span>High performance</span>
+              <span className="text-[#D25E3E]">✦</span>
             </div>
           ))}
         </motion.div>
       </section>
 
-      <section className="px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 overflow-hidden rounded-[26px] border border-white/10 md:grid-cols-4">
-          {[
-            ["08+", "Projects & builds"],
-            ["02", "Client platforms"],
-            ["02", "Professional products"],
-            ["01", "AI product in progress"],
-          ].map(([number, label]) => (
-            <div
-              key={label}
-              className="border-b border-r border-white/10 bg-[#090a0b] px-6 py-8 last:border-r-0 md:border-b-0 md:px-8 md:py-10"
-            >
-              <p className="text-3xl font-medium tracking-[-.05em] md:text-5xl">{number}</p>
-              <p className="mt-2 text-[8px] uppercase tracking-[.18em] text-white/20">{label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-
       {/* =====================================================
-          WORK (Page 2)
+          WORK
       ====================================================== */}
-
-      <section
-        id="work"
-        className="px-5 py-24 md:px-10 md:py-40"
-      >
+      <section id="work" className="bg-[#FAF5F0] px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[.45fr_.55fr]">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUpVariant}
+            className="mb-10 flex flex-col justify-between gap-6 border-b border-[#E8D9D3] pb-6 sm:mb-16 sm:gap-8 sm:pb-8 md:flex-row md:items-end"
+          >
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#d9ff4f]">
-                01 / Selected work
-              </p>
-              <h2 className="mt-6 text-6xl font-medium leading-[.84] tracking-[-.07em] md:text-8xl">
-                Real<br />products.<br />
-                <span className="text-white/20">Real work.</span>
+              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E]">01 / The Workshop</p>
+              <h2 className="mt-3 text-4xl font-bold tracking-[-.045em] text-[#362926] sm:mt-4 sm:text-5xl md:text-7xl">
+                Real <span className="text-[#B09F9B]">products.</span>
               </h2>
             </div>
-            <div className="flex items-end">
-              <p className="max-w-md text-sm leading-7 text-white/35">
-                Business platforms, management systems, job portals,
-                data-heavy products, utilities and premium landing experiences.
+            <div className="flex flex-col items-start gap-3 md:items-end">
+              <p className="rounded-full border border-[#F2D7CE] bg-[#FDF8F5] px-4 py-2 text-sm font-semibold text-[#D25E3E] shadow-sm">
+                Custom systems engineered for scale.
+              </p>
+              <p className="font-mono text-[10px] font-bold text-[#8C7A77]">
+                TOTAL BUILDS: <AnimatedCounter value={projects.length} className="text-sm text-[#D25E3E]" />
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="mt-20 grid gap-6 md:grid-cols-2">
-            {projects
-              .filter((project) => project.featured)
-              .map((project, index) => (
-                <ProjectCard key={project.id} project={project} index={index} />
-              ))}
-          </div>
-
-          <div className="mt-20 border-t border-white/10">
-            {projects
-              .filter((project) => !project.featured)
-              .map((project, index) => (
-                <motion.a
-                  href={project.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  key={project.id}
-                  initial={{ opacity: 0, x: -25 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  className="group grid gap-5 border-b border-white/10 py-8 md:grid-cols-[70px_.2fr_.65fr_30px] md:items-center"
-                >
-                  <span className="text-[9px] font-bold text-white/20">{project.id}</span>
-                  <span className="text-[8px] font-bold uppercase tracking-[.18em] text-[#d9ff4f]">
-                    {project.type}
-                  </span>
-                  <div>
-                    <h3 className="text-2xl font-medium tracking-[-.035em]">{project.title}</h3>
-                    <p className="mt-2 max-w-2xl text-sm text-white/30">{project.description}</p>
-                  </div>
-                  <ArrowUpRight
-                    size={16}
-                    className="text-white/25 transition duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#d9ff4f]"
-                  />
-                </motion.a>
-              ))}
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
           </div>
         </div>
       </section>
-
-      <section className="px-5 py-24 md:px-10 md:py-40">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#7d6cff]">
-            Built with a product mindset
-          </p>
-          <h2 className="mt-8 text-5xl font-medium leading-[.9] tracking-[-.065em] md:text-8xl">
-            You don't need<span className="text-white/20"> another template.</span>
-            <br />
-            You need<span className="text-[#d9ff4f]"> software built around your problem.</span>
-          </h2>
-        </div>
-      </section>
-
 
       {/* =====================================================
-          CAPABILITIES (Page 3)
+          THE SHELF
       ====================================================== */}
-
-      <section
-        id="capabilities"
-        className="border-y border-white/10 bg-[#0d0f10] px-5 py-28 md:px-10 md:py-36"
-      >
+      <section id="shelf" className="border-y border-[#E8D9D3] bg-[#F5EBE6] px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-16 lg:grid-cols-[.32fr_.68fr]">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUpVariant}
+            className="mb-10 flex flex-col justify-between gap-6 sm:mb-16 sm:gap-8 md:flex-row md:items-end"
+          >
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#d9ff4f]">
-                02 / Capabilities
+              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E]">02 / Modular Code</p>
+              <h2 className="mt-3 text-4xl font-bold tracking-[-.045em] text-[#362926] sm:mt-4 sm:text-5xl md:text-7xl">
+                The <span className="text-[#D25E3E]">Shelf.</span>
+              </h2>
+              <p className="mt-3 max-w-lg text-sm leading-6 text-[#6B5C58] sm:mt-4">
+                Ready-made software modules. Drop them into your stack and accelerate your development cycle.
               </p>
-              <h2 className="mt-6 text-5xl font-medium leading-[.88] tracking-[-.06em] md:text-7xl">
+            </div>
+            <div className="flex items-center gap-3 self-start rounded-full border border-[#E8D9D3] bg-white px-4 py-2 font-mono text-xs font-bold text-[#6B5C58] shadow-sm md:self-auto">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#10B981]" />
+              API status: Nominal
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+            {products.map((product, i) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ type: "spring", stiffness: 100, delay: i * 0.08 }}
+                whileHover={{ y: -6 }}
+                className="group flex flex-col overflow-hidden rounded-3xl border border-[#E8D9D3] bg-white shadow-sm transition-shadow duration-500 hover:shadow-[0_15px_40px_rgba(54,41,38,.08)]"
+              >
+                <div className="relative h-36 overflow-hidden border-b border-[#E8D9D3] bg-gradient-to-br from-[#FDF8F5] to-[#F5EBE6] p-5 sm:h-40 sm:p-6">
+                  <div className="absolute right-3 top-3 rounded-full border border-[#E8D9D3] bg-white/80 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#6B5C58] shadow-sm backdrop-blur-md sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[10px]">
+                    {product.cat}
+                  </div>
+                  <Database
+                    size={90}
+                    className={`absolute -bottom-6 -right-6 opacity-10 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-12 ${product.icon}`}
+                  />
+                  <div className="relative z-10 mt-7 sm:mt-8">
+                    <span className="rounded bg-white/90 px-2 py-1 font-mono text-[10px] font-bold text-[#8C7A77] shadow-sm">
+                      {product.id}
+                    </span>
+                    <h3 className="mt-2 text-xl font-bold text-[#362926] sm:text-2xl">{product.name}</h3>
+                  </div>
+                </div>
+
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
+                  <p className="mb-5 flex-1 text-sm leading-relaxed text-[#6B5C58] sm:mb-6">{product.desc}</p>
+                  <div className="mb-5 flex items-center gap-2 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] p-2 font-mono text-[11px] font-bold text-[#8C7A77] sm:mb-6">
+                    <Code2 size={14} className={product.icon} /> Stack: {product.stack}
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between border-t border-[#E8D9D3] pt-5 sm:pt-6">
+                    <div className="text-2xl font-bold tracking-tight text-[#362926] sm:text-3xl">${product.price}</div>
+                    <button className="flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-white px-4 py-2.5 text-xs font-bold text-[#362926] shadow-sm transition-colors hover:bg-[#362926] hover:text-[#FAF5F0] sm:px-5">
+                      <ShoppingCart size={14} /> Get
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          CAPABILITIES
+      ====================================================== */}
+      <section id="capabilities" className="bg-[#FAF5F0] px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 sm:gap-12 lg:grid-cols-[.32fr_.68fr] lg:gap-16">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUpVariant}>
+              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E]">03 / Capabilities</p>
+              <h2 className="mt-4 text-4xl font-bold leading-[.9] tracking-[-.05em] text-[#362926] sm:mt-6 sm:text-5xl md:text-7xl">
                 What I<br />build.
               </h2>
-            </div>
-            <div>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer}>
               {services.map((service) => {
                 const Icon = service.icon;
                 return (
                   <motion.div
                     key={service.number}
+                    variants={{ hidden: { opacity: 0, x: 16 }, visible: { opacity: 1, x: 0, transition: { type: "spring" } } }}
                     whileHover={{ x: 8 }}
-                    className="group flex gap-5 border-t border-white/10 py-9"
+                    className="group flex gap-4 border-t border-[#E8D9D3] py-7 transition-transform sm:gap-6 sm:py-10"
                   >
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[.02] transition group-hover:border-[#d9ff4f]/30 group-hover:bg-[#d9ff4f] group-hover:text-[#090a0b]">
-                      <Icon size={16} />
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#E8D9D3] bg-white text-[#6B5C58] shadow-sm transition-colors duration-300 group-hover:border-[#D25E3E] group-hover:bg-[#D25E3E] group-hover:text-white sm:h-14 sm:w-14">
+                      <Icon size={18} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-2xl font-medium tracking-[-.035em] md:text-4xl">
+                        <h3 className="text-xl font-bold tracking-[-.03em] text-[#362926] sm:text-2xl md:text-3xl">
                           {service.title}
                         </h3>
-                        <span className="text-[8px] font-bold text-white/20">{service.number}</span>
+                        <span className="font-mono text-[10px] font-bold text-[#B09F9B]">{service.number}</span>
                       </div>
-                      <p className="mt-3 max-w-xl text-sm leading-6 text-white/35">
-                        {service.description}
-                      </p>
+                      <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-[#6B5C58] sm:mt-3">{service.description}</p>
                     </div>
                   </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-
       {/* =====================================================
-          THE STACK (Page 4)
+          STACK
       ====================================================== */}
-
-      <section
-        id="stack"
-        className="border-b border-white/10 px-5 py-28 md:px-10 md:py-36"
-      >
+      <section id="stack" className="border-t border-[#E8D9D3] bg-white px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-14 lg:grid-cols-[.32fr_.68fr]">
-            <div>
-              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#d9ff4f]">
-                03 / The Stack
-              </p>
-              <h2 className="mt-6 text-5xl font-medium leading-[.88] tracking-[-.06em] md:text-7xl">
+          <div className="grid gap-10 sm:gap-12 lg:grid-cols-[.32fr_.68fr] lg:gap-14">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUpVariant}>
+              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E]">04 / The Stack</p>
+              <h2 className="mt-4 text-4xl font-bold leading-[.9] tracking-[-.05em] text-[#362926] sm:mt-6 sm:text-5xl md:text-7xl">
                 Tools<br />I use<br />to build.
               </h2>
-              <p className="mt-7 max-w-xs text-sm leading-6 text-white/30">
-                I work across the product stack — from interfaces and APIs to
-                databases, authentication, deployment and integrations.
-              </p>
-            </div>
-            <div>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer}>
               {stackGroups.map((group) => (
-                <div key={group.number} className="border-t border-white/10 py-8 last:border-b">
-                  <div className="mb-5 flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-white/70">{group.title}</h3>
-                    <span className="text-[8px] font-bold uppercase tracking-[.18em] text-white/20">
+                <motion.div
+                  key={group.number}
+                  variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+                  className="border-t border-[#E8D9D3] py-6 last:border-b sm:py-8"
+                >
+                  <div className="mb-5 flex items-center justify-between sm:mb-6">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#6B5C58] sm:text-sm">{group.title}</h3>
+                    <span className="font-mono text-[9px] font-bold uppercase tracking-[.18em] text-[#B09F9B]">
                       {group.number}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {group.technologies.map((technology) => (
-                      <TechBadge key={technology} name={technology} />
+                    {group.technologies.map((tech) => (
+                      <TechBadge key={tech} name={tech} />
                     ))}
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-
       {/* =====================================================
-          ABOUT (Page 5)
+          ABOUT
       ====================================================== */}
-
-      <section
-        id="about"
-        className="px-5 py-28 md:px-10 md:py-40"
-      >
+      <section id="about" className="border-t border-[#E8D9D3] bg-[#F5EBE6] px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-16 lg:grid-cols-[.3fr_.7fr]">
-            <div>
-              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#7d6cff]">
-                04 / About
-              </p>
-              <div className="mt-6 space-y-1 text-[10px] leading-5 text-white/20">
-                <p>B.Tech Graduate</p>
-                <p>Computer Science</p>
-                <p>Full-stack Developer</p>
-                <p>Digital Product Builder</p>
+          <div className="grid gap-10 sm:gap-12 lg:grid-cols-[.3fr_.7fr] lg:gap-16">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUpVariant}>
+              <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E]">05 / About</p>
+              <div className="mt-5 space-y-2 text-[10px] font-bold uppercase leading-5 tracking-wider text-[#8C7A77] sm:mt-6">
+                <p className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D25E3E]" /> B.Tech Graduate
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D25E3E]" /> Computer Science
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D25E3E]" /> Full-stack Developer
+                </p>
               </div>
-            </div>
-            <div>
-              <h2 className="text-4xl font-medium leading-[.95] tracking-[-.055em] md:text-6xl">
-                I enjoy working<span className="text-white/20"> where business problems meet technology.</span>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUpVariant}>
+              <h2 className="text-3xl font-bold leading-[1.15] tracking-[-.035em] text-[#362926] sm:text-4xl md:text-6xl">
+                I enjoy working{" "}
+                <span className="font-medium text-[#B09F9B]">where business problems meet clean technology.</span>
               </h2>
-              <div className="mt-10 grid gap-8 md:grid-cols-2">
-                <p className="text-sm leading-7 text-white/40">
-                  My work spans business management platforms, payment flows,
-                  geographic systems, job platforms, dashboards, data-heavy
-                  products, utility tools and animated interfaces.
-                </p>
-                <p className="text-sm leading-7 text-white/40">
-                  I like understanding the complete product — the user,
-                  workflow, interface, backend and the system underneath it.
-                </p>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
-
-      <section className="px-5 pb-28 md:px-10 md:pb-40">
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-[32px] border border-cyan-400/10 bg-[#0c1417]">
-          <div className="relative p-7 md:p-12">
-            <div className="absolute right-[-100px] top-[-100px] h-[300px] w-[300px] rounded-full bg-cyan-300/[.05] blur-[90px]" />
-            <div className="relative grid gap-12 lg:grid-cols-[.4fr_.6fr]">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/10 bg-cyan-300/[.03] px-3 py-2">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-cyan-300" />
-                  <span className="text-[8px] font-bold uppercase tracking-[.2em] text-cyan-200/60">
-                    Currently building
-                  </span>
-                </div>
-                <h2 className="mt-8 text-5xl font-medium leading-[.88] tracking-[-.06em] md:text-7xl">
-                  Living<br />Avatar.
-                </h2>
-              </div>
-              <div>
-                <p className="max-w-xl text-base leading-7 text-white/40">
-                  An experimental product exploring how a person's face can
-                  become an animated avatar that can perform recorded actions
-                  together with audio.
-                </p>
-                <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                  {["Face processing", "Avatar animation", "Audio", "Recording"].map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-xl border border-white/10 bg-white/[.02] px-4 py-4 text-xs text-white/40"
-                    >
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
 
       {/* =====================================================
-          CONTACT / CTA (Page 6)
+          FOOTER
       ====================================================== */}
-
-      <section
+      <footer
         id="contact"
-        className="px-5 pb-10 md:px-10"
+        ref={footerRef}
+        className="relative overflow-hidden border-t border-[#E8D9D3] bg-white pb-10 pt-16 sm:pb-12 sm:pt-24"
       >
-        <div className="mx-auto max-w-7xl rounded-[38px] bg-[#d9ff4f] px-7 py-20 text-[#090a0b] md:px-14 md:py-28">
-          <div className="max-w-5xl">
-            <p className="text-[9px] font-black uppercase tracking-[.25em]">
-              06 / Start a project
-            </p>
-            <h2 className="mt-7 text-5xl font-medium leading-[.87] tracking-[-.07em] md:text-8xl">
-              Have a problem<br />worth solving?
-            </h2>
-            <p className="mt-8 max-w-xl text-sm leading-6 text-black/50">
-              Tell me what you're trying to build, what problem you're
-              solving and what a successful outcome looks like.
-            </p>
-            <a
-              href="mailto:hello@example.com"
-              className="mt-9 inline-flex items-center gap-3 rounded-full bg-[#090a0b] px-6 py-3.5 text-sm font-semibold text-[#d9ff4f]"
+        <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6">
+          <div className="mb-14 grid grid-cols-1 gap-10 sm:mb-20 sm:gap-12 md:grid-cols-2">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUpVariant}>
+              <p className="mb-3 text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E] sm:mb-4">
+                06 / Initiate Connection
+              </p>
+              <h2 className="mb-6 text-4xl font-bold tracking-tight text-[#362926] sm:mb-8 sm:text-5xl md:text-7xl">
+                Ready to
+                <br />
+                scale up?
+              </h2>
+              <a
+                href="mailto:hello@example.com"
+                className="inline-flex items-center gap-3 rounded-full bg-[#362926] px-7 py-3.5 text-sm font-bold text-[#FAF5F0] shadow-[0_10px_20px_rgba(54,41,38,.15)] transition-all hover:-translate-y-1 hover:bg-[#D25E3E] hover:shadow-[0_15px_30px_rgba(54,41,38,.2)] sm:px-8 sm:py-4"
+              >
+                Open Communications <ArrowRight size={16} />
+              </a>
+            </motion.div>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUpVariant}
+              className="flex flex-col justify-end space-y-3 font-mono text-sm font-bold text-[#6B5C58] sm:space-y-4 md:items-end"
             >
-              Start a conversation
-              <Mail size={15} />
-            </a>
+              <a
+                href="#"
+                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] px-5 py-2.5 shadow-sm transition-colors hover:border-[#D25E3E] hover:text-[#D25E3E] md:w-auto md:justify-end"
+              >
+               <FaGithub /> GitHub // Repos
+              </a>
+              <a
+                href="#"
+                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] px-5 py-2.5 shadow-sm transition-colors hover:border-[#D25E3E] hover:text-[#D25E3E] md:w-auto md:justify-end"
+              >
+                <FaLinkedin /> LinkedIn // Pro
+              </a>
+              <a
+                href="mailto:hello@example.com"
+                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] px-5 py-2.5 shadow-sm transition-colors hover:border-[#D25E3E] hover:text-[#D25E3E] md:w-auto md:justify-end"
+              >
+                <Mail size={15} /> Email // Direct
+              </a>
+            </motion.div>
+          </div>
+
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-[#E8D9D3] pt-7 font-mono text-[10px] font-bold text-[#8C7A77] sm:pt-8 md:flex-row">
+            <div>© {new Date().getFullYear()} Kaiti Developments.</div>
+            <div className="flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-[#F5EBE6] px-3 py-1.5">
+              <Activity size={14} className="text-[#10B981]" /> Sys health: Optimal
+            </div>
           </div>
         </div>
 
-        <footer className="mx-auto mt-10 flex max-w-7xl flex-col justify-between gap-7 border-t border-white/10 py-8 md:flex-row md:items-center">
-          <div>
-            <p className="text-sm font-bold">SHAVANDEB KAITI</p>
-            <p className="mt-1 text-[9px] text-white/20">Full-stack developer · Digital product builder</p>
-          </div>
-          <div className="flex gap-2">
-            <a href="#" aria-label="GitHub" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/35 transition hover:border-[#d9ff4f]/30 hover:text-[#d9ff4f]">
-              <FaGithub size={13} />
-            </a>
-            <a href="#" aria-label="LinkedIn" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/35 transition hover:border-[#d9ff4f]/30 hover:text-[#d9ff4f]">
-              <FaLinkedin size={13} />
-            </a>
-            <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/35 transition hover:border-[#d9ff4f]/30 hover:text-[#d9ff4f]">
-              <FaInstagram size={13} />
-            </a>
-          </div>
-          <p className="text-[9px] text-white/20">© {new Date().getFullYear()} Shavandeb Kaiti</p>
-        </footer>
-      </section>
-
+        <motion.div
+          style={{ y: reducedMotion ? 0 : footerIconY, rotate: reducedMotion ? 0 : footerIconRotate }}
+          className="pointer-events-none absolute -bottom-16 -right-8 z-0 text-[#FAF5F0] opacity-80 sm:-bottom-24 sm:-right-12"
+        >
+          <Cpu size={220} strokeWidth={0.5} className="sm:hidden" />
+          <Cpu size={350} strokeWidth={0.5} className="hidden sm:block" />
+        </motion.div>
+      </footer>
     </main>
   );
 }
