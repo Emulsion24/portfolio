@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -6,13 +6,11 @@ import {
   ArrowUpRight,
   Code2,
   Download,
-
-
   Mail,
   PackageSearch,
   Terminal,
 } from "lucide-react";
-import { FaGithub,FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const projects = [
   {
@@ -20,7 +18,7 @@ const projects = [
     title: "Tint Scholar",
     desc: "Academic management platform connecting teachers, students and administrators with role-based workflows.",
     stack: ["React", "Node.js", "MongoDB", "JWT"],
-    color: "lime",
+    color: "cyan",
     featured: true,
   },
   {
@@ -93,16 +91,19 @@ const reviews = [
     type: "yellow",
     quote: "Strong combination of engineering thinking and visual experimentation.",
     author: "Portfolio / Project Feedback",
+    decoration: "tape",
   },
   {
     type: "pink",
     quote: "The work focuses on interaction instead of simply making another static website.",
     author: "Design Review",
+    decoration: "pin",
   },
   {
     type: "blue",
     quote: "A developer who enjoys building complete systems from interface to backend.",
     author: "Project Perspective",
+    decoration: "corner",
   },
 ];
 
@@ -164,6 +165,7 @@ export default function Page() {
           --ink: #0a0a0a;
           --white: #fff;
           --lime: #a3e635;
+          --cyan: #22d3ee;
           --purple: #b088f9;
           --yellow: #fde047;
           --pink: #f9a8d4;
@@ -391,6 +393,22 @@ export default function Page() {
           left: 50%;
           transform: translateX(-50%) rotate(-3deg);
         }
+        
+        .tape.tape-top {
+          width: 80px;
+          height: 25px;
+          top: -12px;
+          left: 50%;
+          transform: translateX(-50%) rotate(-3deg);
+        }
+
+        .tape.tape-corner {
+          width: 80px;
+          height: 25px;
+          top: -10px;
+          left: -20px;
+          transform: rotate(-45deg);
+        }
 
         .status {
           display: inline-flex;
@@ -499,6 +517,7 @@ export default function Page() {
           background: var(--red);
           transform: translateX(-50%);
           box-shadow: -2px 4px 5px rgba(0,0,0,.3), inset -2px -2px 4px rgba(0,0,0,.25);
+          z-index: 5;
         }
 
         .notebook h3 {
@@ -534,17 +553,19 @@ export default function Page() {
         .marquee-inner {
           width: max-content;
           display: flex;
-          animation: marquee 20s linear infinite;
+          animation: marquee 25s linear infinite;
         }
 
         .marquee span {
           font-family: var(--mono);
           font-weight: 800;
           font-size: 1.05rem;
+          padding-right: 15px;
         }
 
         @keyframes marquee {
-          to { transform: translateX(-50%); }
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
         }
 
         .section {
@@ -612,6 +633,7 @@ export default function Page() {
         }
 
         .project.lime { background: var(--lime); }
+        .project.cyan { background: var(--cyan); } 
         .project.purple { background: var(--purple); }
         .project.yellow { background: var(--yellow); }
         .project.blue { background: var(--blue); }
@@ -791,74 +813,82 @@ export default function Page() {
 
         .job li { margin: 7px 0; }
 
-        .stack-card {
-          background: var(--blue);
-          border: 3px solid var(--ink);
-          box-shadow: var(--shadow);
-          padding: 30px;
-        }
-
-        .stack-cloud {
+        /* REVIEWS POST-IT STYLES - TILTED & UNORDERED */
+        .reviews-container {
           display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 3rem;
           flex-wrap: wrap;
-          gap: 12px;
-          margin-top: 24px;
+          padding: 3rem 0;
         }
 
-        .stack-pill {
-          padding: 10px 13px;
-          background: var(--white);
-          border: 3px solid var(--ink);
-          box-shadow: 3px 3px 0 var(--ink);
-          font-family: var(--mono);
-          font-size: .72rem;
-          font-weight: 800;
-          transition: transform .15s ease;
-        }
-
-        .stack-pill:hover { transform: rotate(-3deg) translateY(-3px); }
-
-        .reviews {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 25px;
-        }
-
-        .review {
-          min-height: 270px;
-          position: relative;
+        .post-it {
+          width: min(100%, 320px);
           padding: 35px 28px 28px;
-          border: 3px solid var(--ink);
-          box-shadow: 5px 7px 0 rgba(10,10,10,.35);
-          transition: transform .2s ease;
+          position: relative;
+          box-shadow: 4px 6px 18px rgba(0, 0, 0, 0.18);
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+          border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .review:hover { transform: translateY(-8px) rotate(1deg); }
-        .review.yellow { background: #fdfd96; transform: rotate(-2deg); }
-        .review.pink { background: var(--pink); transform: rotate(2deg) translateY(10px); }
-        .review.blue { background: var(--blue); transform: rotate(-1deg); }
+        .post-it::after {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          right: 10px;
+          bottom: 15px;
+          width: 50%;
+          height: 20%;
+          box-shadow: 0 15px 15px rgba(0, 0, 0, 0.2);
+          transform: rotate(4deg);
+        }
 
-        .review p {
-          margin: 0;
+        /* Stronger hover effect to "lift" the post-it out of the mess */
+        .post-it:hover {
+          transform: scale(1.08) rotate(0deg) translateY(-15px) !important;
+          box-shadow: 8px 15px 25px rgba(0, 0, 0, 0.25);
+          z-index: 20;
+        }
+
+        /* Aggressive tilts and offsets for the messy look */
+        .post-yellow { 
+          background: #fdfd96; 
+          transform: rotate(-7deg) translateY(-10px) translateX(-5px); 
+        }
+        .post-pink { 
+          background: #ffb6c1; 
+          transform: rotate(9deg) translateY(25px) translateX(-15px); 
+          z-index: 2;
+        }
+        .post-blue { 
+          background: #aec6cf; 
+          transform: rotate(-5deg) translateY(-15px) translateX(15px); 
+        }
+
+        .review-quote {
           font-family: var(--hand);
           color: #003b66;
-          font-size: 1.8rem;
-          line-height: 1.08;
+          font-size: 1.6rem;
+          line-height: 1.2;
+          margin: 0 0 1rem;
         }
 
         .review-author {
-          margin-top: 24px !important;
-          font-family: var(--mono) !important;
-          color: var(--ink) !important;
-          font-size: .67rem !important;
+          font-family: var(--mono);
           font-weight: 800;
+          font-size: 0.75rem;
+          margin: 0;
         }
 
-        .stars {
-          margin-top: 12px !important;
-          color: var(--red) !important;
-          font-family: var(--sans) !important;
-          font-size: 1rem !important;
+        .review-stars {
+          color: var(--red);
+          margin-top: 10px;
+          font-size: 1.2rem;
+        }
+        
+        .review-tape {
+          width: 60px !important;
         }
 
         .shelf {
@@ -1054,8 +1084,6 @@ export default function Page() {
           .hero-grid { gap:38px; }
           .notebook { width:min(600px,100%); margin:0 auto; }
           .project,.project:first-child,.project:nth-child(2),.project:nth-child(3),.project:nth-child(4),.project:nth-child(5),.project:nth-child(6) { grid-column: span 6; }
-          .reviews { grid-template-columns:1fr; }
-          .review { max-width:540px; width:100%; margin:0 auto; }
           .shelf { grid-template-columns:repeat(2,1fr); }
         }
 
@@ -1110,9 +1138,17 @@ export default function Page() {
           .job h3 { font-size:1.32rem; }
           .job p,.job li { font-size:.86rem; line-height:1.55; }
 
-          .reviews { gap:18px; }
-          .review { min-height:225px; padding:27px 19px 21px; }
-          .review p { font-size:1.43rem; }
+          .reviews-container { 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 1rem 0;
+            gap: 2rem;
+          }
+          
+          /* Less aggressive transforms on mobile so it doesn't break horizontal scrolling */
+          .post-yellow { transform: rotate(-3deg) translateY(0); }
+          .post-pink { transform: rotate(4deg) translateY(0); }
+          .post-blue { transform: rotate(-2deg) translateY(0); }
 
           .shelf { grid-template-columns:1fr; gap:17px; }
           .package { min-height:215px; padding:21px; }
@@ -1176,8 +1212,6 @@ export default function Page() {
         </div>
       </div>
 
-      
-
       <section className="hero">
         <svg className="hero-track" viewBox="0 0 1440 850" preserveAspectRatio="xMidYMid slice">
           <path className="track" d="M-100 650 L180 650 L180 220 L720 220 L720 520 L1110 520 L1110 120 L1540 120" />
@@ -1225,8 +1259,6 @@ export default function Page() {
               </button>
             </div>
 
-           
-
             <p className="handwriting hero-signoff">
               I like turning complicated ideas into interfaces people actually enjoy using. →
             </p>
@@ -1244,6 +1276,10 @@ export default function Page() {
 
       <div className="marquee">
         <div className="marquee-inner">
+          <span>
+            {" // FULL STACK // REACT ARCHITECTURE // NEXT.JS // NODE.JS // JAVA // DATABASES // UI/UX // PERFORMANCE // "}
+            {" // FULL STACK // REACT ARCHITECTURE // NEXT.JS // NODE.JS // JAVA // DATABASES // UI/UX // PERFORMANCE // "}
+          </span>
           <span>
             {" // FULL STACK // REACT ARCHITECTURE // NEXT.JS // NODE.JS // JAVA // DATABASES // UI/UX // PERFORMANCE // "}
             {" // FULL STACK // REACT ARCHITECTURE // NEXT.JS // NODE.JS // JAVA // DATABASES // UI/UX // PERFORMANCE // "}
@@ -1361,24 +1397,28 @@ export default function Page() {
         </div>
       </section>
 
-    
-
       <section className="section">
         <div className="container">
           <div className="reveal section-heading-wrap"><SectionTitle
             kicker="05 // NOTES FROM THE BOARD"
-            title="Feedback"
-            note="Pinned thoughts from the people reviewing the work."
+            title="Client Feedback"
+            note="(What people are saying...)"
           /></div>
 
-          <div className="reviews">
-            {reviews.map((review) => (
-              <article className={`review ${review.type} reveal reveal-delay-${(reviews.indexOf(review) % 3) + 1}`} key={review.author}>
-                <Tape className="hero-tape" />
-                <p>“{review.quote}”</p>
+          <div className="reviews-container">
+            {reviews.map((review, index) => (
+              <div 
+                className={`post-it post-${review.type} reveal reveal-delay-${(index % 3) + 1}`} 
+                key={review.author}
+              >
+                {review.decoration === "tape" && <Tape className="tape-top review-tape" />}
+                {review.decoration === "pin" && <div className="pin" />}
+                {review.decoration === "corner" && <Tape className="tape-corner" />}
+                
+                <p className="review-quote">"{review.quote}"</p>
                 <p className="review-author">{review.author}</p>
-                <p className="stars">★★★★★</p>
-              </article>
+                <p className="review-stars">★★★★★</p>
+              </div>
             ))}
           </div>
         </div>

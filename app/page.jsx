@@ -270,7 +270,7 @@ function TechBadge({ name }) {
     <motion.span
       whileHover={{ y: -3, scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300, damping: 15 }}
-      className="rounded-full border border-[#E8D9D3] bg-white px-3.5 py-2 text-[10px] font-semibold text-[#6B5C58] transition-colors hover:border-[#D25E3E]/30 hover:bg-[#FDF8F5] hover:text-[#D25E3E] sm:px-4"
+      className="rounded-full border border-[#E8D9D3] bg-[#FFFFFF] px-3.5 py-2 text-[10px] font-semibold text-[#6B5C58] shadow-[0_4px_12px_rgba(54,41,38,0.08)] transition-all hover:border-[#D25E3E]/30 hover:bg-[#FDF8F5] hover:text-[#D25E3E] hover:shadow-[0_8px_20px_rgba(54,41,38,0.15)] sm:px-4"
     >
       {name}
     </motion.span>
@@ -299,7 +299,7 @@ function ProjectPreview({ project }) {
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.9, ease: easeOut, delay: 0.15 }}
         whileHover={{ scale: 1.03, rotateX: 2, rotateY: -2 }}
-        className="absolute left-[5%] right-[5%] top-[7%] bottom-[5%] overflow-hidden rounded-[12px] border border-[#E8D9D3] bg-white shadow-[0_20px_40px_rgba(54,41,38,.12)] [transform-style:preserve-3d] sm:left-[6%] sm:right-[6%] sm:top-[8%] sm:bottom-[6%] sm:rounded-[14px]"
+        className="absolute left-[5%] right-[5%] top-[7%] bottom-[5%] overflow-hidden rounded-[12px] border border-[#E8D9D3] bg-[#FFFFFF] shadow-[0_25px_50px_rgba(54,41,38,.25)] [transform-style:preserve-3d] sm:left-[6%] sm:right-[6%] sm:top-[8%] sm:bottom-[6%] sm:rounded-[14px]"
       >
         <div className="absolute top-0 z-10 flex h-7 w-full items-center border-b border-[#E8D9D3] bg-[#FAF5F0] px-3 sm:h-8">
           <div className="flex gap-1.5">
@@ -320,7 +320,7 @@ function ProjectPreview({ project }) {
         </div>
       </motion.div>
 
-      <div className="absolute left-4 top-4 rounded-full border border-[#E8D9D3] bg-white/90 px-2.5 py-1 text-[7px] font-bold uppercase tracking-[.2em] text-[#6B5C58] shadow-sm backdrop-blur-md sm:left-5 sm:top-5 sm:px-3 sm:py-1.5 sm:text-[8px]">
+      <div className="absolute left-4 top-4 rounded-full border border-[#E8D9D3] bg-[#FFFFFF]/90 px-2.5 py-1 text-[7px] font-bold uppercase tracking-[.2em] text-[#6B5C58] shadow-sm backdrop-blur-md sm:left-5 sm:top-5 sm:px-3 sm:py-1.5 sm:text-[8px]">
         {project.id}
       </div>
     </div>
@@ -341,7 +341,7 @@ function ProjectCard({ project, index }) {
       transition={{ delay: (index % 2) * 0.08 }}
       className="group"
     >
-      <div className="overflow-hidden rounded-[24px] border border-[#E8D9D3] bg-white shadow-sm transition-all duration-500 hover:shadow-[0_15px_30px_rgba(54,41,38,.06)] sm:rounded-[31px]">
+      <div className="overflow-hidden rounded-[24px] border border-[#E8D9D3] bg-[#FFFFFF] shadow-[0_15px_40px_rgba(54,41,38,0.12)] transition-all duration-500 hover:shadow-[0_30px_70px_rgba(54,41,38,0.22)] sm:rounded-[31px]">
         <ProjectPreview project={project} />
 
         <div className="p-5 sm:p-6 md:p-8">
@@ -480,7 +480,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5, type: "spring" }}
-        className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#E8D9D3] bg-white/90 px-3 py-2 shadow-[0_10px_30px_rgba(54,41,38,.08)] backdrop-blur-xl sm:bottom-6 sm:gap-3 sm:px-4 sm:py-2.5"
+        className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#E8D9D3] bg-[#FFFFFF]/95 px-3 py-2 shadow-[0_15px_40px_rgba(54,41,38,0.18)] backdrop-blur-xl sm:bottom-6 sm:gap-3 sm:px-4 sm:py-2.5"
       >
         <button
           onClick={handlePrev}
@@ -519,7 +519,7 @@ export default function Home() {
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, type: "spring" }}
-          className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-[#E8D9D3] bg-white/85 px-3 py-2.5 shadow-sm backdrop-blur-xl sm:px-4 sm:py-3 md:px-5"
+          className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-[#E8D9D3] bg-[#FFFFFF]/95 px-3 py-2.5 shadow-[0_10px_30px_rgba(54,41,38,0.15)] backdrop-blur-xl sm:px-4 sm:py-3 md:px-5"
         >
           <a href="#top" className="group flex items-center gap-2.5 sm:gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D25E3E] text-[9px] font-black text-white shadow-md transition-transform group-hover:rotate-12 group-hover:scale-110 sm:h-9 sm:w-9 sm:text-[10px]">
@@ -565,7 +565,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="mx-auto mt-2 max-w-7xl rounded-[24px] border border-[#E8D9D3] bg-white/95 p-2 shadow-[0_20px_40px_rgba(54,41,38,.1)] backdrop-blur-xl md:hidden"
+              className="mx-auto mt-2 max-w-7xl rounded-[24px] border border-[#E8D9D3] bg-[#FFFFFF]/95 p-2 shadow-[0_20px_50px_rgba(54,41,38,.2)] backdrop-blur-xl md:hidden"
             >
               <nav className="flex flex-col">
                 {sitePages.slice(1).map((page, i) => (
@@ -678,7 +678,7 @@ export default function Home() {
             <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
               <motion.div
                 variants={fadeUpVariant}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-white px-3.5 py-2 shadow-sm sm:mb-8 sm:px-4"
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-[#FFFFFF] px-3.5 py-2 shadow-[0_10px_30px_rgba(54,41,38,0.12)] sm:mb-8 sm:px-4"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="absolute h-full w-full animate-ping rounded-full bg-[#10B981] opacity-60" />
@@ -733,7 +733,7 @@ export default function Home() {
                 className="absolute left-1/2 top-1/2 h-[310px] w-[300px] -translate-x-1/2 -translate-y-1/2 [perspective:1200px]"
               >
                 <div className="relative h-full w-full [transform-style:preserve-3d]">
-                  <div className="absolute left-1/2 top-1/2 h-[245px] w-[290px] -translate-x-1/2 -translate-y-1/2 -rotate-[5deg] rounded-[24px] border border-[#E8D9D3] bg-white p-3 shadow-[0_35px_80px_rgba(54,41,38,.08)]">
+                  <div className="absolute left-1/2 top-1/2 h-[245px] w-[290px] -translate-x-1/2 -translate-y-1/2 -rotate-[5deg] rounded-[24px] border border-[#E8D9D3] bg-[#FFFFFF] p-3 shadow-[0_35px_80px_rgba(54,41,38,.18)]">
                     <div className="relative h-full overflow-hidden rounded-[17px] border border-[#E8D9D3] bg-[#FDFBF7] p-3">
                       <div className="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-[#D25E3E]/5" />
                       <div className="relative z-10 mb-6 flex items-center gap-1.5">
@@ -851,7 +851,7 @@ export default function Home() {
                 Ready-made software modules. Drop them into your stack and accelerate your development cycle.
               </p>
             </div>
-            <div className="flex items-center gap-3 self-start rounded-full border border-[#E8D9D3] bg-white px-4 py-2 font-mono text-xs font-bold text-[#6B5C58] shadow-sm md:self-auto">
+            <div className="flex items-center gap-3 self-start rounded-full border border-[#E8D9D3] bg-[#FFFFFF] px-4 py-2 font-mono text-xs font-bold text-[#6B5C58] shadow-sm md:self-auto">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#10B981]" />
               API status: Nominal
             </div>
@@ -866,10 +866,10 @@ export default function Home() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ type: "spring", stiffness: 100, delay: i * 0.08 }}
                 whileHover={{ y: -6 }}
-                className="group flex flex-col overflow-hidden rounded-3xl border border-[#E8D9D3] bg-white shadow-sm transition-shadow duration-500 hover:shadow-[0_15px_40px_rgba(54,41,38,.08)]"
+                className="group flex flex-col overflow-hidden rounded-3xl border border-[#E8D9D3] bg-[#FFFFFF] shadow-[0_15px_40px_rgba(54,41,38,0.12)] transition-shadow duration-500 hover:shadow-[0_30px_70px_rgba(54,41,38,0.22)]"
               >
-                <div className="relative h-36 overflow-hidden border-b border-[#E8D9D3] bg-gradient-to-br from-[#FDF8F5] to-[#F5EBE6] p-5 sm:h-40 sm:p-6">
-                  <div className="absolute right-3 top-3 rounded-full border border-[#E8D9D3] bg-white/80 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#6B5C58] shadow-sm backdrop-blur-md sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[10px]">
+                <div className="relative h-36 overflow-hidden border-b border-[#E8D9D3] bg-gradient-to-br from-[#F5EBE6] to-[#E8D9D3] p-5 sm:h-40 sm:p-6">
+                  <div className="absolute right-3 top-3 rounded-full border border-[#E8D9D3] bg-[#FFFFFF]/80 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#6B5C58] shadow-sm backdrop-blur-md sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[10px]">
                     {product.cat}
                   </div>
                   <Database
@@ -877,7 +877,7 @@ export default function Home() {
                     className={`absolute -bottom-6 -right-6 opacity-10 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-12 ${product.icon}`}
                   />
                   <div className="relative z-10 mt-7 sm:mt-8">
-                    <span className="rounded bg-white/90 px-2 py-1 font-mono text-[10px] font-bold text-[#8C7A77] shadow-sm">
+                    <span className="rounded bg-[#FFFFFF]/90 px-2 py-1 font-mono text-[10px] font-bold text-[#8C7A77] shadow-sm">
                       {product.id}
                     </span>
                     <h3 className="mt-2 text-xl font-bold text-[#362926] sm:text-2xl">{product.name}</h3>
@@ -892,7 +892,7 @@ export default function Home() {
 
                   <div className="mt-auto flex items-center justify-between border-t border-[#E8D9D3] pt-5 sm:pt-6">
                     <div className="text-2xl font-bold tracking-tight text-[#362926] sm:text-3xl">${product.price}</div>
-                    <button className="flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-white px-4 py-2.5 text-xs font-bold text-[#362926] shadow-sm transition-colors hover:bg-[#362926] hover:text-[#FAF5F0] sm:px-5">
+                    <button className="flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-[#FFFFFF] px-4 py-2.5 text-xs font-bold text-[#362926] shadow-[0_8px_20px_rgba(54,41,38,0.08)] transition-colors hover:bg-[#362926] hover:text-[#FAF5F0] sm:px-5">
                       <ShoppingCart size={14} /> Get
                     </button>
                   </div>
@@ -915,17 +915,17 @@ export default function Home() {
                 What I<br />build.
               </h2>
             </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer} className="space-y-6 sm:space-y-8">
               {services.map((service) => {
                 const Icon = service.icon;
                 return (
                   <motion.div
                     key={service.number}
-                    variants={{ hidden: { opacity: 0, x: 16 }, visible: { opacity: 1, x: 0, transition: { type: "spring" } } }}
-                    whileHover={{ x: 8 }}
-                    className="group flex gap-4 border-t border-[#E8D9D3] py-7 transition-transform sm:gap-6 sm:py-10"
+                    variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { type: "spring" } } }}
+                    whileHover={{ y: -6 }}
+                    className="group flex gap-4 rounded-3xl border border-[#E8D9D3] bg-[#FFFFFF] p-6 shadow-[0_15px_35px_rgba(54,41,38,0.12)] transition-all hover:shadow-[0_25px_50px_rgba(54,41,38,0.22)] sm:gap-6 sm:p-8"
                   >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#E8D9D3] bg-white text-[#6B5C58] shadow-sm transition-colors duration-300 group-hover:border-[#D25E3E] group-hover:bg-[#D25E3E] group-hover:text-white sm:h-14 sm:w-14">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#E8D9D3] bg-[#FAF5F0] text-[#6B5C58] shadow-sm transition-colors duration-300 group-hover:border-[#D25E3E] group-hover:bg-[#D25E3E] group-hover:text-white sm:h-14 sm:w-14">
                       <Icon size={18} />
                     </div>
                     <div className="flex-1">
@@ -957,12 +957,12 @@ export default function Home() {
                 Tools<br />I use<br />to build.
               </h2>
             </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer} className="space-y-6 sm:space-y-8">
               {stackGroups.map((group) => (
                 <motion.div
                   key={group.number}
                   variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-                  className="border-t border-[#E8D9D3] py-6 last:border-b sm:py-8"
+                  className="rounded-3xl border border-[#E8D9D3] bg-[#FFFFFF] p-6 shadow-[0_15px_35px_rgba(54,41,38,0.12)] transition-all hover:shadow-[0_25px_50px_rgba(54,41,38,0.22)] sm:p-8"
                 >
                   <div className="mb-5 flex items-center justify-between sm:mb-6">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#6B5C58] sm:text-sm">{group.title}</h3>
@@ -990,14 +990,14 @@ export default function Home() {
           <div className="grid gap-10 sm:gap-12 lg:grid-cols-[.3fr_.7fr] lg:gap-16">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUpVariant}>
               <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#D25E3E]">05 / About</p>
-              <div className="mt-5 space-y-2 text-[10px] font-bold uppercase leading-5 tracking-wider text-[#8C7A77] sm:mt-6">
-                <p className="flex items-center gap-2">
+              <div className="mt-5 flex flex-col gap-3 text-[10px] font-bold uppercase leading-5 tracking-wider text-[#8C7A77] sm:mt-6">
+                <p className="inline-flex w-fit items-center gap-3 rounded-xl border border-[#E8D9D3] bg-[#FFFFFF] px-4 py-2.5 shadow-[0_8px_20px_rgba(54,41,38,0.1)]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#D25E3E]" /> B.Tech Graduate
                 </p>
-                <p className="flex items-center gap-2">
+                <p className="inline-flex w-fit items-center gap-3 rounded-xl border border-[#E8D9D3] bg-[#FFFFFF] px-4 py-2.5 shadow-[0_8px_20px_rgba(54,41,38,0.1)]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#D25E3E]" /> Computer Science
                 </p>
-                <p className="flex items-center gap-2">
+                <p className="inline-flex w-fit items-center gap-3 rounded-xl border border-[#E8D9D3] bg-[#FFFFFF] px-4 py-2.5 shadow-[0_8px_20px_rgba(54,41,38,0.1)]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#D25E3E]" /> Full-stack Developer
                 </p>
               </div>
@@ -1047,19 +1047,19 @@ export default function Home() {
             >
               <a
                 href="#"
-                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] px-5 py-2.5 shadow-sm transition-colors hover:border-[#D25E3E] hover:text-[#D25E3E] md:w-auto md:justify-end"
+                className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#E8D9D3] bg-[#FFFFFF] px-5 py-3 shadow-[0_10px_25px_rgba(54,41,38,0.1)] transition-all hover:border-[#D25E3E] hover:text-[#D25E3E] hover:shadow-[0_20px_40px_rgba(54,41,38,0.18)] md:w-auto md:justify-end"
               >
                <FaGithub /> GitHub // Repos
               </a>
               <a
                 href="#"
-                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] px-5 py-2.5 shadow-sm transition-colors hover:border-[#D25E3E] hover:text-[#D25E3E] md:w-auto md:justify-end"
+                className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#E8D9D3] bg-[#FFFFFF] px-5 py-3 shadow-[0_10px_25px_rgba(54,41,38,0.1)] transition-all hover:border-[#D25E3E] hover:text-[#D25E3E] hover:shadow-[0_20px_40px_rgba(54,41,38,0.18)] md:w-auto md:justify-end"
               >
                 <FaLinkedin /> LinkedIn // Pro
               </a>
               <a
                 href="mailto:hello@example.com"
-                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#E8D9D3] bg-[#FAF5F0] px-5 py-2.5 shadow-sm transition-colors hover:border-[#D25E3E] hover:text-[#D25E3E] md:w-auto md:justify-end"
+                className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#E8D9D3] bg-[#FFFFFF] px-5 py-3 shadow-[0_10px_25px_rgba(54,41,38,0.1)] transition-all hover:border-[#D25E3E] hover:text-[#D25E3E] hover:shadow-[0_20px_40px_rgba(54,41,38,0.18)] md:w-auto md:justify-end"
               >
                 <Mail size={15} /> Email // Direct
               </a>
@@ -1068,7 +1068,7 @@ export default function Home() {
 
           <div className="flex flex-col items-center justify-between gap-4 border-t border-[#E8D9D3] pt-7 font-mono text-[10px] font-bold text-[#8C7A77] sm:pt-8 md:flex-row">
             <div>© {new Date().getFullYear()} Kaiti Developments.</div>
-            <div className="flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-[#F5EBE6] px-3 py-1.5">
+            <div className="flex items-center gap-2 rounded-full border border-[#E8D9D3] bg-[#FFFFFF] px-3 py-1.5 shadow-[0_4px_12px_rgba(54,41,38,0.06)]">
               <Activity size={14} className="text-[#10B981]" /> Sys health: Optimal
             </div>
           </div>
